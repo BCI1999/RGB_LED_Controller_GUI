@@ -20,9 +20,41 @@ namespace RGB_LED_Controller
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        byte SliderRed;
+        byte SliderGreen;
+        byte SliderBlue;
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void RED_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            SliderRed = Convert.ToByte(RED.Value);
+            RGB(SliderRed, SliderGreen, SliderBlue, Preview);
+        }
+
+        private void GREEN_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            SliderGreen = Convert.ToByte(GREEN.Value);
+            RGB(SliderRed, SliderGreen, SliderBlue, Preview);
+        }
+
+        private void BLUE_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            SliderBlue = Convert.ToByte(BLUE.Value);
+            RGB(SliderRed, SliderGreen, SliderBlue, Preview);
+        }
+
+        private void RGB(byte RED, byte GREEN, byte BLUE, Rectangle rectangle)
+        {
+            Color RGBKleur = new Color();
+            RGBKleur = Color.FromRgb(RED, GREEN, BLUE);
+            SolidColorBrush rgb = new SolidColorBrush();
+            rgb.Color = RGBKleur;
+            rectangle.Fill = rgb;
         }
     }
 }

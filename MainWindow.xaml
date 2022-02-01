@@ -5,8 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RGB_LED_Controller"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="RGB Led Controller" Height="450" Width="800">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <GroupBox Header="Manueel Kleur Instellen" Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Rood:" Margin="10,5,10,0"/>
+                    <Slider Name="RED" Margin="10"
+                            ValueChanged="RED_ValueChanged"
+                            Minimum="0" Maximum="255"
+                            IsSnapToTickEnabled="True"/>
+
+                    <TextBlock Text="Groen:" Margin="10,5,10,0"/>
+                    <Slider Name="GREEN" Margin="10"
+                            ValueChanged="GREEN_ValueChanged"
+                            Minimum="0" Maximum="255"
+                            IsSnapToTickEnabled="True"/>
+
+                    <TextBlock Text="Blauw:" Margin="10,5,10,0"/>
+                    <Slider Name="BLUE" Margin="10"
+                            ValueChanged="BLUE_ValueChanged"
+                            Minimum="0" Maximum="255"
+                            IsSnapToTickEnabled="True"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1">
+            <TextBlock Text="Voorbeeld:" Margin="10,10,10,0"/>
+            <Rectangle Name="Preview"
+                       HorizontalAlignment="Left"
+                       Margin="10"
+                       Width="250"
+                       Height="170" Stroke="Black"/>
+        </StackPanel>
     </Grid>
 </Window>
