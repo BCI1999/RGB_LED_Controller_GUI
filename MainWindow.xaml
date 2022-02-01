@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RGB_LED_Controller"
         mc:Ignorable="d"
-        Title="RGB Led Controller" Height="450" Width="800">
+        Title="RGB Led Controller" Height="450" Width="800" Loaded="ProgramLoaded">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -35,6 +35,13 @@
                             ValueChanged="BLUE_ValueChanged"
                             Minimum="0" Maximum="255"
                             IsSnapToTickEnabled="True"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Seriële Poort:" Margin="10">
+                <StackPanel>
+                    <ComboBox Name ="cbxSerial"
+                              Margin="10"
+                              SelectionChanged="cbxSerial_SelectionChanged"/>
                 </StackPanel>
             </GroupBox>
         </StackPanel>

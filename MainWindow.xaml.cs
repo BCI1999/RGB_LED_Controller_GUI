@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO.Ports;
+using System.Diagnostics;
+using System.Windows.Threading;
 
 namespace RGB_LED_Controller
 {
@@ -20,14 +23,18 @@ namespace RGB_LED_Controller
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        //Defining variables
         byte SliderRed;
         byte SliderGreen;
         byte SliderBlue;
 
+        //Making serial port
+        SerialPort _SerialPort;
+
         public MainWindow()
         {
             InitializeComponent();
+            _SerialPort = new SerialPort();
         }
 
         private void RED_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -48,6 +55,27 @@ namespace RGB_LED_Controller
             RGB(SliderRed, SliderGreen, SliderBlue, Preview);
         }
 
+        //Adding serial port names to the combo box
+        private void ProgramLoaded(object sender, RoutedEventArgs e)
+        {
+            cbxSerial.ItemsSource = SerialPort.GetPortNames();
+        }
+
+        //Setting chosen serial port as the actual serial port
+        private void cbxSerial_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_SerialPort != null)
+            {
+                if (_SerialPort.IsOpen)
+                    _SerialPort.Close();
+
+                _SerialPort.PortName = cbxSerial.SelectedItem.ToString();
+
+                _SerialPort.Open();
+            }
+        }
+
+        //Method to put RGB slider values onto the preview
         private void RGB(byte RED, byte GREEN, byte BLUE, Rectangle rectangle)
         {
             Color RGBKleur = new Color();
@@ -56,5 +84,7 @@ namespace RGB_LED_Controller
             rgb.Color = RGBKleur;
             rectangle.Fill = rgb;
         }
+
+        
     }
 }
