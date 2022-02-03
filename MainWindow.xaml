@@ -16,38 +16,44 @@
         </Grid.RowDefinitions>
 
         <StackPanel>
-            <GroupBox Header="Manueel Kleur Instellen" Margin="10">
-                <StackPanel>
-                    <TextBlock Text="Rood:" Margin="10,5,10,0"/>
-                    <Slider Name="RED" Margin="10"
-                            ValueChanged="RED_ValueChanged"
-                            Minimum="0" Maximum="255"
-                            IsSnapToTickEnabled="True"/>
-
-                    <TextBlock Text="Groen:" Margin="10,5,10,0"/>
-                    <Slider Name="GREEN" Margin="10"
-                            ValueChanged="GREEN_ValueChanged"
-                            Minimum="0" Maximum="255"
-                            IsSnapToTickEnabled="True"/>
-
-                    <TextBlock Text="Blauw:" Margin="10,5,10,0"/>
-                    <Slider Name="BLUE" Margin="10"
-                            ValueChanged="BLUE_ValueChanged"
-                            Minimum="0" Maximum="255"
-                            IsSnapToTickEnabled="True"/>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Header="Seriële Poort:" Margin="10">
+            <GroupBox Header="Serial port:" Margin="10">
                 <StackPanel>
                     <ComboBox Name ="cbxSerial"
                               Margin="10"
                               SelectionChanged="cbxSerial_SelectionChanged"/>
                 </StackPanel>
             </GroupBox>
+
+            <GroupBox Header="Manual color setting" Margin="5">
+                <StackPanel>
+                    <TextBlock Text="Red:" Margin="10,5,10,0"/>
+                    <Slider Name="RED" Margin="10"
+                            ValueChanged="RED_ValueChanged"
+                            Minimum="0" Maximum="255"
+                            IsSnapToTickEnabled="True"/>
+
+                    <TextBlock Text="Green:" Margin="10,5,10,0"/>
+                    <Slider Name="GREEN" Margin="10"
+                            ValueChanged="GREEN_ValueChanged"
+                            Minimum="0" Maximum="255"
+                            IsSnapToTickEnabled="True"/>
+
+                    <TextBlock Text="Blue:" Margin="10,5,10,0"/>
+                    <Slider Name="BLUE" Margin="10"
+                            ValueChanged="BLUE_ValueChanged"
+                            Minimum="0" Maximum="255"
+                            IsSnapToTickEnabled="True"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Effect:" Margin="10">
+                <ComboBox Name="cbxEffect"
+                          Margin="5"/>
+            </GroupBox>
         </StackPanel>
 
         <StackPanel Grid.Column="1">
-            <TextBlock Text="Voorbeeld:" Margin="10,10,10,0"/>
+            <TextBlock Text="Preview:" Margin="10,10,10,0"/>
             <Rectangle Name="Preview"
                        HorizontalAlignment="Left"
                        Margin="10"

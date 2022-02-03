@@ -35,24 +35,46 @@ namespace RGB_LED_Controller
         {
             InitializeComponent();
             _SerialPort = new SerialPort();
+
+            cbxEffect.Items.Add("Static");
+            cbxEffect.Items.Add("Rainbow");
+            cbxEffect.Items.Add("Cycling");
         }
 
         private void RED_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SliderRed = Convert.ToByte(RED.Value);
-            RGB(SliderRed, SliderGreen, SliderBlue, Preview);
+            //If selected effect is static, show preview:
+            switch (cbxEffect.SelectedIndex)
+            {
+                case 0:
+                    RGB(SliderRed, SliderGreen, SliderBlue, Preview);
+                break;
+            }
         }
 
         private void GREEN_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SliderGreen = Convert.ToByte(GREEN.Value);
-            RGB(SliderRed, SliderGreen, SliderBlue, Preview);
+            //If selected effect is static, show preview:
+            switch (cbxEffect.SelectedIndex)
+            {
+                case 0:
+                    RGB(SliderRed, SliderGreen, SliderBlue, Preview);
+                break;
+            }
         }
 
         private void BLUE_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SliderBlue = Convert.ToByte(BLUE.Value);
-            RGB(SliderRed, SliderGreen, SliderBlue, Preview);
+            //If selected effect is static, show preview:
+            switch (cbxEffect.SelectedIndex)
+            {
+                case 0:
+                    RGB(SliderRed, SliderGreen, SliderBlue, Preview);
+                break;
+            }
         }
 
         //Adding serial port names to the combo box
