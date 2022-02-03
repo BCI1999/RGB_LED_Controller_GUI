@@ -28,37 +28,93 @@ namespace RGB_LED_Controller
         byte SliderGreen;
         byte SliderBlue;
 
+        byte RedValue;
+        byte GreenValue;
+        byte BlueValue;
+
         //Making serial port
         SerialPort _SerialPort;
+
+        DispatcherTimer _dispatcherTimer;
 
         public MainWindow()
         {
             InitializeComponent();
             _SerialPort = new SerialPort();
-        }
+            _SerialPort.BaudRate = 9600;
 
-        private void RED_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            SliderRed = Convert.ToByte(RED.Value);
-            RGB(SliderRed, SliderGreen, SliderBlue, Preview);
-        }
+            //Dsipatch timer
+            _dispatcherTimer = new DispatcherTimer();
+            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(1);
+            _dispatcherTimer.Tick += _dispatcherTimer_Tick;
+            _dispatcherTimer.Start();
 
-        private void GREEN_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            SliderGreen = Convert.ToByte(GREEN.Value);
-            RGB(SliderRed, SliderGreen, SliderBlue, Preview);
-        }
-
-        private void BLUE_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            SliderBlue = Convert.ToByte(BLUE.Value);
-            RGB(SliderRed, SliderGreen, SliderBlue, Preview);
+            cbxEffect.Items.Add("Static");
+            cbxEffect.Items.Add("Rainbow");
+            cbxEffect.Items.Add("Cycling");
         }
 
         //Adding serial port names to the combo box
         private void ProgramLoaded(object sender, RoutedEventArgs e)
         {
             cbxSerial.ItemsSource = SerialPort.GetPortNames();
+        }
+
+        //Dispatcher timer event, ran every 1ms
+        private void _dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            //Depending on chosen effect, send correct RGB values over UART(serial).
+            switch (cbxEffect.SelectedIndex)
+            {
+                case 0:
+                    RedValue = SliderRed;
+                    GreenValue = SliderGreen;
+                    BlueValue = SliderBlue;
+                break;
+            }
+
+            //Send the actual data, with their respective ASCII reference bytes (R, G and B)
+            byte[] RGBdata = { 0x52, RedValue, 0x47, GreenValue, 0x42, BlueValue };
+            if (_SerialPort.IsOpen)
+            {
+                _SerialPort.Write(RGBdata, 0, 3);
+            }
+        }
+
+        private void RED_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            SliderRed = Convert.ToByte(RED.Value);
+            //If selected effect is static, show preview:
+            switch (cbxEffect.SelectedIndex)
+            {
+                case 0:
+                    RGB(SliderRed, SliderGreen, SliderBlue, Preview);
+                break;
+            }
+        }
+
+        private void GREEN_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            SliderGreen = Convert.ToByte(GREEN.Value);
+            //If selected effect is static, show preview:
+            switch (cbxEffect.SelectedIndex)
+            {
+                case 0:
+                    RGB(SliderRed, SliderGreen, SliderBlue, Preview);
+                    break;
+            }
+        }
+
+        private void BLUE_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            SliderBlue = Convert.ToByte(BLUE.Value);
+            //If selected effect is static, show preview:
+            switch (cbxEffect.SelectedIndex)
+            {
+                case 0:
+                    RGB(SliderRed, SliderGreen, SliderBlue, Preview);
+                    break;
+            }
         }
 
         //Setting chosen serial port as the actual serial port
@@ -84,7 +140,5 @@ namespace RGB_LED_Controller
             rgb.Color = RGBKleur;
             rectangle.Fill = rgb;
         }
-
-        
     }
 }
