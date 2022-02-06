@@ -74,10 +74,10 @@ namespace RGB_LED_Controller
             }
 
             //Send the actual data, with their respective ASCII reference bytes (R, G and B)
-            byte[] RGBdata = { 0x52, RedValue, 0x47, GreenValue, 0x42, BlueValue };
+            byte[] RGBdata = { 0x53, RedValue, GreenValue, BlueValue };
             if (_SerialPort.IsOpen)
             {
-                _SerialPort.Write(RGBdata, 0, 3);
+                _SerialPort.Write(RGBdata, 0, 4);
             }
         }
 
