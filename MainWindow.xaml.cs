@@ -45,7 +45,7 @@ namespace RGB_LED_Controller
 
             //Dsipatch timer
             _dispatcherTimer = new DispatcherTimer();
-            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(1);
+            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(5);
             _dispatcherTimer.Tick += _dispatcherTimer_Tick;
             _dispatcherTimer.Start();
 
@@ -74,16 +74,18 @@ namespace RGB_LED_Controller
             }
 
             //Send the actual data, with their respective ASCII reference bytes (R, G and B)
-            byte[] Sync = { 0x53 };
-            byte[] RedData = { RedValue };
-            byte[] GreenData = { GreenValue };
-            byte[] BlueData = { BlueValue };
+            //byte[] RedData = { 0x52, RedValue };
+            //byte[] GreenData = { 0x47, GreenValue };
+            //byte[] BlueData = { 0x42, BlueValue };
+            byte[] RGBdata = { RedValue, GreenValue, BlueValue };
             if (_SerialPort.IsOpen)
             {
-                _SerialPort.Write(Sync, 0, 1);
-                _SerialPort.Write(RedData, 0, 1);
-                _SerialPort.Write(GreenData, 0, 1);
-                _SerialPort.Write(BlueData, 0, 1);
+                //_SerialPort.Write(RedData, 0, 2);
+                //_SerialPort.Write(GreenData, 0, 2);
+                //_SerialPort.Write(BlueData, 0, 2);
+                _SerialPort.Write(RGBdata, 0, 3);
+                System.Diagnostics.Debug.WriteLine("R" + RedValue);
+
             }
         }
 
