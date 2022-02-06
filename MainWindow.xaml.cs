@@ -74,10 +74,16 @@ namespace RGB_LED_Controller
             }
 
             //Send the actual data, with their respective ASCII reference bytes (R, G and B)
-            byte[] RGBdata = { 0x53, RedValue, GreenValue, BlueValue };
+            byte[] Sync = { 0x53 };
+            byte[] RedData = { RedValue };
+            byte[] GreenData = { GreenValue };
+            byte[] BlueData = { BlueValue };
             if (_SerialPort.IsOpen)
             {
-                _SerialPort.Write(RGBdata, 0, 4);
+                _SerialPort.Write(Sync, 0, 1);
+                _SerialPort.Write(RedData, 0, 1);
+                _SerialPort.Write(GreenData, 0, 1);
+                _SerialPort.Write(BlueData, 0, 1);
             }
         }
 
@@ -124,7 +130,7 @@ namespace RGB_LED_Controller
             {
                 if (_SerialPort.IsOpen)
                     _SerialPort.Close();
-
+                
                 _SerialPort.PortName = cbxSerial.SelectedItem.ToString();
 
                 _SerialPort.Open();
