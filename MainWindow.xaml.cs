@@ -41,7 +41,7 @@ namespace RGB_LED_Controller
         {
             InitializeComponent();
             _SerialPort = new SerialPort();
-            _SerialPort.BaudRate = 9600;
+            _SerialPort.BaudRate = 57600;
 
             //Dsipatch timer
             _dispatcherTimer = new DispatcherTimer();
@@ -74,18 +74,12 @@ namespace RGB_LED_Controller
             }
 
             //Send the actual data, with their respective ASCII reference bytes (R, G and B)
-            //byte[] RedData = { 0x52, RedValue };
-            //byte[] GreenData = { 0x47, GreenValue };
-            //byte[] BlueData = { 0x42, BlueValue };
-            byte[] RGBdata = { RedValue, GreenValue, BlueValue };
+            //And send an "end" byte (255) for synchronisation 
+            //The RGB value sent by the program may not exceed 254!
+            byte[] RGBdata = { RedValue, GreenValue, BlueValue, 0xFF };
             if (_SerialPort.IsOpen)
             {
-                //_SerialPort.Write(RedData, 0, 2);
-                //_SerialPort.Write(GreenData, 0, 2);
-                //_SerialPort.Write(BlueData, 0, 2);
-                _SerialPort.Write(RGBdata, 0, 3);
-                System.Diagnostics.Debug.WriteLine("R" + RedValue);
-
+                _SerialPort.Write(RGBdata, 0, 4);
             }
         }
 

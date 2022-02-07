@@ -29,19 +29,19 @@
                     <TextBlock Text="Red:" Margin="10,5,10,0"/>
                     <Slider Name="RED" Margin="10"
                             ValueChanged="RED_ValueChanged"
-                            Minimum="0" Maximum="255"
+                            Minimum="0" Maximum="254"
                             IsSnapToTickEnabled="True"/>
 
                     <TextBlock Text="Green:" Margin="10,5,10,0"/>
                     <Slider Name="GREEN" Margin="10"
                             ValueChanged="GREEN_ValueChanged"
-                            Minimum="0" Maximum="255"
+                            Minimum="0" Maximum="254"
                             IsSnapToTickEnabled="True"/>
 
                     <TextBlock Text="Blue:" Margin="10,5,10,0"/>
                     <Slider Name="BLUE" Margin="10"
                             ValueChanged="BLUE_ValueChanged"
-                            Minimum="0" Maximum="255"
+                            Minimum="0" Maximum="254"
                             IsSnapToTickEnabled="True"/>
                 </StackPanel>
             </GroupBox>
