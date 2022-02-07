@@ -136,10 +136,10 @@ namespace RGB_LED_Controller
         //Method to put RGB slider values onto the preview
         private void RGB(byte RED, byte GREEN, byte BLUE, Rectangle rectangle)
         {
-            Color RGBKleur = new Color();
-            RGBKleur = Color.FromRgb(RED, GREEN, BLUE);
+            Color RGBColor = new Color();
+            RGBColor = Color.FromRgb(RED, GREEN, BLUE);
             SolidColorBrush rgb = new SolidColorBrush();
-            rgb.Color = RGBKleur;
+            rgb.Color = RGBColor;
             rectangle.Fill = rgb;
         }
     }
