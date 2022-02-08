@@ -40,9 +40,8 @@ namespace RGB_LED_Controller
         SerialPort _SerialPort;
 
         DispatcherTimer _dispatcherTimer;
-        DispatcherTimer breathTimer;
 
-        Rainbow_Effect breathing;
+        Cycle_Effect rainbow;
 
         public MainWindow()
         {
@@ -54,18 +53,12 @@ namespace RGB_LED_Controller
             _dispatcherTimer = new DispatcherTimer();
             _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(5);
             _dispatcherTimer.Tick += _dispatcherTimer_Tick;
-            _dispatcherTimer.Start();
-
-            //Breathing timer
-            breathTimer = new DispatcherTimer();
-            breathTimer.Interval = TimeSpan.FromMilliseconds(2000);
-            breathTimer.Start();
+            _dispatcherTimer.Start();            
 
             cbxEffect.Items.Add("Static");      //Index 0
-            cbxEffect.Items.Add("Rainbow");   //Index 1
-            cbxEffect.Items.Add("Cycling");     //Index 2
+            cbxEffect.Items.Add("Cycle");     //Index 1
 
-            breathing = new Rainbow_Effect();
+            rainbow = new Cycle_Effect();
         }    
 
         //Adding serial port names to the combo box
@@ -89,10 +82,10 @@ namespace RGB_LED_Controller
                 
                 //Rainbow:
                 case 1:
-                    breathing.RGB_Rainbow(0,0,0);
-                    RedValue = breathing.Red;
-                    GreenValue = breathing.Green;
-                    BlueValue = breathing.Blue;
+                    rainbow.RGB_Cycle(RedValue, GreenValue, BlueValue);
+                    RedValue = rainbow.Red;
+                    GreenValue = rainbow.Green;
+                    BlueValue = rainbow.Blue;
                 break;
             }
 
