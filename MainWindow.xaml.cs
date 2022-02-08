@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using System.IO.Ports;
 using System.Diagnostics;
 using System.Windows.Threading;
+using System.Threading;
+using System.Timers;
 
 namespace RGB_LED_Controller
 {
@@ -32,10 +34,15 @@ namespace RGB_LED_Controller
         byte GreenValue;
         byte BlueValue;
 
+        bool exectue = false;
+
         //Making serial port
         SerialPort _SerialPort;
 
         DispatcherTimer _dispatcherTimer;
+        DispatcherTimer breathTimer;
+
+        Rainbow_Effect breathing;
 
         public MainWindow()
         {
@@ -49,10 +56,17 @@ namespace RGB_LED_Controller
             _dispatcherTimer.Tick += _dispatcherTimer_Tick;
             _dispatcherTimer.Start();
 
-            cbxEffect.Items.Add("Static");
-            cbxEffect.Items.Add("Rainbow");
-            cbxEffect.Items.Add("Cycling");
-        }
+            //Breathing timer
+            breathTimer = new DispatcherTimer();
+            breathTimer.Interval = TimeSpan.FromMilliseconds(2000);
+            breathTimer.Start();
+
+            cbxEffect.Items.Add("Static");      //Index 0
+            cbxEffect.Items.Add("Rainbow");   //Index 1
+            cbxEffect.Items.Add("Cycling");     //Index 2
+
+            breathing = new Rainbow_Effect();
+        }    
 
         //Adding serial port names to the combo box
         private void ProgramLoaded(object sender, RoutedEventArgs e)
@@ -66,10 +80,19 @@ namespace RGB_LED_Controller
             //Depending on chosen effect, send correct RGB values over UART(serial).
             switch (cbxEffect.SelectedIndex)
             {
+                //Static:
                 case 0:
                     RedValue = SliderRed;
                     GreenValue = SliderGreen;
                     BlueValue = SliderBlue;
+                break;
+                
+                //Rainbow:
+                case 1:
+                    breathing.RGB_Rainbow(0,0,0);
+                    RedValue = breathing.Red;
+                    GreenValue = breathing.Green;
+                    BlueValue = breathing.Blue;
                 break;
             }
 
@@ -141,6 +164,12 @@ namespace RGB_LED_Controller
             SolidColorBrush rgb = new SolidColorBrush();
             rgb.Color = RGBColor;
             rectangle.Fill = rgb;
+        }
+
+        private void RGB_Breath(byte Red, byte Green, byte Blue)
+        {
+            
+
         }
     }
 }
