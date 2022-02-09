@@ -53,10 +53,10 @@ namespace RGB_LED_Controller
             _dispatcherTimer = new DispatcherTimer();
             _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(5);
             _dispatcherTimer.Tick += _dispatcherTimer_Tick;
-            _dispatcherTimer.Start();            
+            _dispatcherTimer.Start();
 
             cbxEffect.Items.Add("Static");      //Index 0
-            cbxEffect.Items.Add("Cycle");     //Index 1
+            cbxEffect.Items.Add("Cycle");       //Index 1
 
             rainbow = new Cycle_Effect();
         }    
@@ -85,7 +85,7 @@ namespace RGB_LED_Controller
                     rainbow.RGB_Cycle(RedValue, GreenValue, BlueValue);
                     RedValue = rainbow.Red;
                     GreenValue = rainbow.Green;
-                    BlueValue = rainbow.Blue;
+                    BlueValue = rainbow.Blue;                    
                 break;
             }
 
@@ -97,42 +97,24 @@ namespace RGB_LED_Controller
             {
                 _SerialPort.Write(RGBdata, 0, 4);
             }
+
+            //Display a preview of the displayed color
+            RGB(RedValue, GreenValue, BlueValue, Preview);
         }
 
         private void RED_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SliderRed = Convert.ToByte(RED.Value);
-            //If selected effect is static, show preview:
-            switch (cbxEffect.SelectedIndex)
-            {
-                case 0:
-                    RGB(SliderRed, SliderGreen, SliderBlue, Preview);
-                break;
-            }
         }
 
         private void GREEN_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SliderGreen = Convert.ToByte(GREEN.Value);
-            //If selected effect is static, show preview:
-            switch (cbxEffect.SelectedIndex)
-            {
-                case 0:
-                    RGB(SliderRed, SliderGreen, SliderBlue, Preview);
-                    break;
-            }
         }
 
         private void BLUE_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SliderBlue = Convert.ToByte(BLUE.Value);
-            //If selected effect is static, show preview:
-            switch (cbxEffect.SelectedIndex)
-            {
-                case 0:
-                    RGB(SliderRed, SliderGreen, SliderBlue, Preview);
-                    break;
-            }
         }
 
         //Setting chosen serial port as the actual serial port
@@ -157,12 +139,6 @@ namespace RGB_LED_Controller
             SolidColorBrush rgb = new SolidColorBrush();
             rgb.Color = RGBColor;
             rectangle.Fill = rgb;
-        }
-
-        private void RGB_Breath(byte Red, byte Green, byte Blue)
-        {
-            
-
-        }
+        }        
     }
 }
