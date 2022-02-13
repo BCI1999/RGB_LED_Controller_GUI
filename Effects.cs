@@ -8,11 +8,12 @@ using System.Timers;
 
 namespace RGB_LED_Controller
 {
-    internal class Cycle_Effect
+    internal class Effects
     {
         private byte red;
         private byte green;
         private byte blue;
+        private int effect;
 
         public byte Red
         {
@@ -32,37 +33,57 @@ namespace RGB_LED_Controller
             set { blue = value; }
         }        
 
-        //Make a sawtooth like cycling pattern for R, G and B values
-        public void RGB_Cycle(byte r, byte g, byte b)
+        public int Effect
         {
-            if ((r > 0) && (b == 0))
+            get { return effect; }
+            set { effect = value; }
+        }
+
+
+        public void RGB_Static()
+        {
+
+        }
+
+        //Make a sawtooth like cycling pattern for R, G and B values
+        public void RGB_Cycle(/*byte r, byte g, byte b*/)
+        {
+            if ((red > 0) && (blue == 0))
             {
-                r--;
-                g++;
+                red--;
+                green++;
             }
 
-            if ((g > 0) && (r == 0))
+            if ((green > 0) && (red == 0))
             {
-                g--;
-                b++;
+                green--;
+                blue++;
             }
 
-            if ((b > 0) && (g == 0))
+            if ((blue > 0) && (green == 0))
             {
-                b--;
-                r++;
+                blue--;
+                red++;
             }
 
             //If no value is yet assigned, start with red at value 254
             //The r, g and b values won't exceed 254.
-            if ((r == 0) && (g == 0) && (b == 0))
+            if ((red == 0) && (green == 0) && (blue == 0))
             {
-                r = 254;
+                red = 254;
             }
 
-            red = r;
-            green = g;
-            blue = b;
+            //If none are 0, start anew
+            if ((red != 0) && (green != 0) && (blue != 0))
+            {
+                red = 254;
+                green = 0;
+                blue = 0;
+            }
+
+            //red = r;
+            //green = g;
+            //blue = b;
 
         }
 

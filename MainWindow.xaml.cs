@@ -25,21 +25,14 @@ namespace RGB_LED_Controller
     /// </summary>
     public partial class MainWindow : Window
     {
-        //Defining variables
-        byte SliderRed;
-        byte SliderGreen;
-        byte SliderBlue;
-
-        byte RedValue;
-        byte GreenValue;
-        byte BlueValue;
-
         //Making serial port
         SerialPort _SerialPort;
 
+        //Make new dispatch timer
         DispatcherTimer _dispatcherTimer;
 
-        Cycle_Effect rainbow;
+        //Make instance of the effects class
+        Effects _effects;
 
         public MainWindow()
         {
@@ -47,16 +40,17 @@ namespace RGB_LED_Controller
             _SerialPort = new SerialPort();
             _SerialPort.BaudRate = 57600;
 
-            //Dsipatcher timer
+            //Dsipatcher timer setup
             _dispatcherTimer = new DispatcherTimer();
             _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(5);
             _dispatcherTimer.Tick += _dispatcherTimer_Tick;
             _dispatcherTimer.Start();
 
+            //Add effects to choose from to the combobox
             cbxEffect.Items.Add("Static");      //Index 0
             cbxEffect.Items.Add("Cycle");       //Index 1
 
-            rainbow = new Cycle_Effect();
+            _effects = new Effects();
         }
 
         //Adding serial port names to the combo box
@@ -65,7 +59,7 @@ namespace RGB_LED_Controller
             cbxSerial.ItemsSource = SerialPort.GetPortNames();
         }
 
-        //Dispatcher timer event, ran every 1ms
+        //Dispatcher timer event, ran every 1ms to process the chosen effect and send to the controller
         private void _dispatcherTimer_Tick(object sender, EventArgs e)
         {
             //Depending on chosen effect, send correct RGB values over UART(serial).
@@ -73,46 +67,56 @@ namespace RGB_LED_Controller
             {
                 //Static:
                 case 0:
-                    RedValue = SliderRed;
-                    GreenValue = SliderGreen;
-                    BlueValue = SliderBlue;
-                break;
+                    _effects.RGB_Static();
+                    break;
                 
-                //Rainbow:
+                //Cycle:
                 case 1:
-                    rainbow.RGB_Cycle(RedValue, GreenValue, BlueValue);
-                    RedValue = rainbow.Red;
-                    GreenValue = rainbow.Green;
-                    BlueValue = rainbow.Blue;
+                    _effects.RGB_Cycle();
                 break;
+            }
+
+            //If any programmed effect is chosen, lock the sliders
+            if (cbxEffect.SelectedIndex != 0)
+            {
+                Slider_Lock(RED, false);
+                Slider_Lock(GREEN, false);
+                Slider_Lock(BLUE, false);
+            }
+            //Else, enable
+            else
+            {
+                Slider_Lock(RED, true);
+                Slider_Lock(GREEN, true);
+                Slider_Lock(BLUE, true);
             }
             
             //Send RGB values and an "end" byte (255) for synchronisation 
-            //The RGB value sent by the program may not exceed 254!
-            byte[] RGBdata = { RedValue, GreenValue, BlueValue, 0xFF };
+            //The RGB value sent by the program may not exceed 254! (this is barely noticable by eye)
+            byte[] RGBdata = { _effects.Red, _effects.Green, _effects.Blue, 0xFF };
             if (_SerialPort.IsOpen)
             {
                 _SerialPort.Write(RGBdata, 0, 4);
             }
 
             //Display a preview of the displayed color
-            RGB(RedValue, GreenValue, BlueValue, Preview);
+            RGB(_effects.Red, _effects.Green, _effects.Blue, Preview);
         }
 
+        //Sliders
         private void RED_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            //SliderRed = Convert.ToByte(RED.Value);
-            rainbow.Red = Convert.ToByte(RED.Value);
+            _effects.Red = Convert.ToByte(RED.Value);
         }
 
         private void GREEN_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            SliderGreen = Convert.ToByte(GREEN.Value);
+            _effects.Green = Convert.ToByte(GREEN.Value);
         }
 
         private void BLUE_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            SliderBlue = Convert.ToByte(BLUE.Value);
+            _effects.Blue = Convert.ToByte(BLUE.Value);
         }
 
         //Setting chosen serial port as the actual serial port
@@ -137,6 +141,19 @@ namespace RGB_LED_Controller
             SolidColorBrush rgb = new SolidColorBrush();
             rgb.Color = RGBColor;
             rectangle.Fill = rgb;
+        }
+
+        //Method to prevent usage of sliders during programmed effect
+        private void Slider_Lock(Slider _slider, bool enable)
+        {
+            if (enable)
+            {
+                _slider.Maximum = 254;
+            }
+            else
+            {
+                _slider.Maximum = 0;
+            }
         }
     }
 }
