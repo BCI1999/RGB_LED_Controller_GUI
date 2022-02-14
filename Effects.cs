@@ -96,30 +96,31 @@ namespace RGB_LED_Controller
             double tempblue;
 
             //Make start values, depending the value of the selected color
-            double startred = sliderRed.Value / 95;
-            double startgreen = sliderGreen.Value / 95;
-            double startblue = sliderBlue.Value / 95;
+            double startred = sliderRed.Value / 100;
+            double startgreen = sliderGreen.Value / 100;
+            double startblue = sliderBlue.Value / 100;
             if (UpDown)
             {
-                tempred = (red / 0.95) + startred;
-                tempgreen = (green / 0.95) + startgreen;
-                tempblue = (blue / 0.95) + startblue;
-            }
-            else
-            {
-                //If to make the value lower slow at first, then go faster
-                if ((red > 200) || (green > 200) || (blue > 200))
+                //If statement to the make change faster near 0                
+                if ((red <= 4) || (green <= 4) || (blue <= 4))
                 {
-                    tempred = red * 0.99;
-                    tempgreen = green * 0.99;
-                    tempblue = blue * 0.99;
+                    tempred = (red * 1.01) + startred;
+                    tempgreen = (green * 1.01) + startgreen;
+                    tempblue = (blue * 1.01) + startblue;
                 }
                 else
                 {
-                    tempred = red * 0.94;
-                    tempgreen = green * 0.94;
-                    tempblue = blue * 0.94;
+                    tempred = red * 1.01;
+                    tempgreen = green * 1.01;
+                    tempblue = blue * 1.01;
                 }
+            }
+            else
+            {
+                tempred = red * 0.99;
+                tempgreen = green * 0.99;
+                tempblue = blue * 0.99;
+                
             }
 
             //Temp values may not exceed 254
@@ -138,7 +139,7 @@ namespace RGB_LED_Controller
 
             //Make a dispatcher timer for the breathing effect
             var BreathingTimer = new DispatcherTimer();
-            BreathingTimer.Interval = TimeSpan.FromMilliseconds(75);
+            BreathingTimer.Interval = TimeSpan.FromMilliseconds(50);
             BreathingTimer.Start();
             //Execute the following code when a tick is made:
             BreathingTimer.Tick += (sender, args) =>
@@ -148,7 +149,7 @@ namespace RGB_LED_Controller
                 green = Convert.ToByte(Math.Floor(tempgreen));
                 blue = Convert.ToByte(Math.Floor(tempblue));
 
-                if ((red <= 0) && (green <= 0) && (blue <= 0))
+                if ((red==0 && sliderRed.Value!=0) || (green == 0 && sliderGreen.Value != 0) || (blue == 0 && sliderBlue.Value != 0))
                 {
                     red = 0;
                     green = 0;
