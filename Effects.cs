@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Drawing;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace RGB_LED_Controller
 {
     internal class Effects
     {
+        
+
         private byte red;
         private byte green;
         private byte blue;
@@ -87,18 +90,20 @@ namespace RGB_LED_Controller
 
         public void breath(Slider sliderRed, Slider sliderGreen, Slider sliderBlue)
         {
+            //Make temporary doubles
             double tempred;
             double tempgreen;
             double tempblue;
 
-            double lastred = sliderRed.Value / 95;
-            double lastgreen = sliderGreen.Value / 95;
-            double lastblue = sliderBlue.Value / 95;
+            //Make start values, depending the value of the selected color
+            double startred = sliderRed.Value / 95;
+            double startgreen = sliderGreen.Value / 95;
+            double startblue = sliderBlue.Value / 95;
             if (UpDown)
             {
-                tempred = (red / 0.95) + lastred;
-                tempgreen = (green / 0.95) + lastgreen;
-                tempblue = (blue / 0.95) + lastblue;
+                tempred = (red / 0.95) + startred;
+                tempgreen = (green / 0.95) + startgreen;
+                tempblue = (blue / 0.95) + startblue;
             }
             else
             {
@@ -111,13 +116,13 @@ namespace RGB_LED_Controller
                 }
                 else
                 {
-                    tempred = red * 0.95;
-                    tempgreen = green * 0.95;
-                    tempblue = blue * 0.95;
+                    tempred = red * 0.94;
+                    tempgreen = green * 0.94;
+                    tempblue = blue * 0.94;
                 }
             }
 
-
+            //Temp values may not exceed 254
             if (tempred >= 254)
             {
                 tempred = 254;
@@ -131,26 +136,34 @@ namespace RGB_LED_Controller
                 tempblue = 254;
             }
 
-            red = Convert.ToByte(Math.Floor(tempred));
-            green = Convert.ToByte(Math.Floor(tempgreen));
-            blue = Convert.ToByte(Math.Floor(tempblue));
-            Thread.Sleep(100);
-
-            if ((red <= 0) && (green <= 0) && (blue <= 0))
+            //Make a dispatcher timer for the breathing effect
+            var BreathingTimer = new DispatcherTimer();
+            BreathingTimer.Interval = TimeSpan.FromMilliseconds(75);
+            BreathingTimer.Start();
+            //Execute the following code when a tick is made:
+            BreathingTimer.Tick += (sender, args) =>
             {
-                red = 0;
-                green = 0;
-                blue = 0;
-                UpDown = true;
-            }
+                BreathingTimer.Stop();
+                red = Convert.ToByte(Math.Floor(tempred));
+                green = Convert.ToByte(Math.Floor(tempgreen));
+                blue = Convert.ToByte(Math.Floor(tempblue));
 
-            if ((red >= Convert.ToByte(sliderRed.Value)) && (green >= Convert.ToByte(sliderGreen.Value)) && (blue >= Convert.ToByte(sliderBlue.Value)))
-            {
-                red = Convert.ToByte(sliderRed.Value);
-                green = Convert.ToByte(sliderGreen.Value);
-                blue = Convert.ToByte(sliderBlue.Value);
-                UpDown = false;
-            }
+                if ((red <= 0) && (green <= 0) && (blue <= 0))
+                {
+                    red = 0;
+                    green = 0;
+                    blue = 0;
+                    UpDown = true;
+                }
+
+                if ((red >= Convert.ToByte(sliderRed.Value)) && (green >= Convert.ToByte(sliderGreen.Value)) && (blue >= Convert.ToByte(sliderBlue.Value)))
+                {
+                    red = Convert.ToByte(sliderRed.Value);
+                    green = Convert.ToByte(sliderGreen.Value);
+                    blue = Convert.ToByte(sliderBlue.Value);
+                    UpDown = false;
+                }
+            };
         }
     }
 }

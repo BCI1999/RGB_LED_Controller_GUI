@@ -28,7 +28,7 @@ namespace RGB_LED_Controller
         //Making serial port
         SerialPort _SerialPort;
 
-        //Make new dispatch timer
+        //Make new dispatch timer for sending the data
         DispatcherTimer _dispatcherTimer;
 
         //Make instance of the effects class
@@ -40,7 +40,7 @@ namespace RGB_LED_Controller
             _SerialPort = new SerialPort();
             _SerialPort.BaudRate = 57600;
 
-            //Dsipatcher timer setup
+            //Dsipatcher timer setup for sending data
             _dispatcherTimer = new DispatcherTimer();
             _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(5);
             _dispatcherTimer.Tick += _dispatcherTimer_Tick;
