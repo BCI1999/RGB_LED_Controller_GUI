@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Drawing;
+using System.Windows.Controls;
 
 namespace RGB_LED_Controller
 {
@@ -14,6 +16,7 @@ namespace RGB_LED_Controller
         private byte green;
         private byte blue;
         private int effect;
+        bool UpDown;
 
         public byte Red
         {
@@ -80,12 +83,74 @@ namespace RGB_LED_Controller
                 green = 0;
                 blue = 0;
             }
-
-            //red = r;
-            //green = g;
-            //blue = b;
-
         }
 
+        public void breath(Slider sliderRed, Slider sliderGreen, Slider sliderBlue)
+        {
+            double tempred;
+            double tempgreen;
+            double tempblue;
+
+            double lastred = sliderRed.Value / 95;
+            double lastgreen = sliderGreen.Value / 95;
+            double lastblue = sliderBlue.Value / 95;
+            if (UpDown)
+            {
+                tempred = (red / 0.95) + lastred;
+                tempgreen = (green / 0.95) + lastgreen;
+                tempblue = (blue / 0.95) + lastblue;
+            }
+            else
+            {
+                //If to make the value lower slow at first, then go faster
+                if ((red > 200) || (green > 200) || (blue > 200))
+                {
+                    tempred = red * 0.99;
+                    tempgreen = green * 0.99;
+                    tempblue = blue * 0.99;
+                }
+                else
+                {
+                    tempred = red * 0.95;
+                    tempgreen = green * 0.95;
+                    tempblue = blue * 0.95;
+                }
+            }
+
+
+            if (tempred >= 254)
+            {
+                tempred = 254;
+            }
+            if (tempgreen >= 254)
+            {
+                tempgreen = 254;
+            }
+            if (tempblue >= 254)
+            {
+                tempblue = 254;
+            }
+
+            red = Convert.ToByte(Math.Floor(tempred));
+            green = Convert.ToByte(Math.Floor(tempgreen));
+            blue = Convert.ToByte(Math.Floor(tempblue));
+            Thread.Sleep(100);
+
+            if ((red <= 0) && (green <= 0) && (blue <= 0))
+            {
+                red = 0;
+                green = 0;
+                blue = 0;
+                UpDown = true;
+            }
+
+            if ((red >= Convert.ToByte(sliderRed.Value)) && (green >= Convert.ToByte(sliderGreen.Value)) && (blue >= Convert.ToByte(sliderBlue.Value)))
+            {
+                red = Convert.ToByte(sliderRed.Value);
+                green = Convert.ToByte(sliderGreen.Value);
+                blue = Convert.ToByte(sliderBlue.Value);
+                UpDown = false;
+            }
+        }
     }
 }

@@ -49,6 +49,7 @@ namespace RGB_LED_Controller
             //Add effects to choose from to the combobox
             cbxEffect.Items.Add("Static");      //Index 0
             cbxEffect.Items.Add("Cycle");       //Index 1
+            cbxEffect.Items.Add("Breath");      //Index 2
 
             _effects = new Effects();
         }
@@ -74,10 +75,14 @@ namespace RGB_LED_Controller
                 case 1:
                     _effects.RGB_Cycle();
                 break;
+
+                case 2:
+                    _effects.breath(RED, GREEN, BLUE);
+                break;
             }
 
             //If any programmed effect is chosen, lock the sliders
-            if (cbxEffect.SelectedIndex != 0)
+            if ((cbxEffect.SelectedIndex != 0) && (cbxEffect.SelectedIndex != 2))
             {
                 Slider_Lock(RED, false);
                 Slider_Lock(GREEN, false);
