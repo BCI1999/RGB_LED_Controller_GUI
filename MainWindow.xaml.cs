@@ -106,6 +106,11 @@ namespace RGB_LED_Controller
 
             //Display a preview of the displayed color
             RGB(_effects.Red, _effects.Green, _effects.Blue, Preview);
+
+            //Update displayed value on sliders
+            RedValue.Text = Convert.ToString(_effects.Red);
+            GreenValue.Text = Convert.ToString(_effects.Green);
+            BlueValue.Text = Convert.ToString(_effects.Blue);
         }
 
         //Sliders

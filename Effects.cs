@@ -13,8 +13,6 @@ namespace RGB_LED_Controller
 {
     internal class Effects
     {
-        
-
         private byte red;
         private byte green;
         private byte blue;
@@ -37,14 +35,7 @@ namespace RGB_LED_Controller
         {
             get { return blue; }
             set { blue = value; }
-        }        
-
-        public int Effect
-        {
-            get { return effect; }
-            set { effect = value; }
         }
-
 
         public void RGB_Static()
         {
@@ -88,6 +79,7 @@ namespace RGB_LED_Controller
             }
         }
 
+        //Method for the breathing effect
         public void breath(Slider sliderRed, Slider sliderGreen, Slider sliderBlue)
         {
             //Make temporary doubles
@@ -99,10 +91,12 @@ namespace RGB_LED_Controller
             double startred = sliderRed.Value / 100;
             double startgreen = sliderGreen.Value / 100;
             double startblue = sliderBlue.Value / 100;
+
+            //If the value should go up, go up
             if (UpDown)
             {
                 //If statement to the make change faster near 0                
-                if ((red <= 4) || (green <= 4) || (blue <= 4))
+                if ((red <= 16) || (green <= 16) || (blue <= 16))
                 {
                     tempred = (red * 1.01) + startred;
                     tempgreen = (green * 1.01) + startgreen;
@@ -114,16 +108,30 @@ namespace RGB_LED_Controller
                     tempgreen = green * 1.01;
                     tempblue = blue * 1.01;
                 }
+
+                //for (double n = 0.0; n >= Math.PI; n = n + (Math.PI / 180.0))
+                //{
+                //    tempred = red * Math.Sin(n);
+                //    tempgreen = green * Math.Sin(n);
+                //    tempblue = blue * Math.Sin(n);
+                //}
             }
             else
             {
+                //If not going up, go down
                 tempred = red * 0.99;
                 tempgreen = green * 0.99;
                 tempblue = blue * 0.99;
-                
+
+                //for (double n = 0.0; n >= (Math.PI / 2.0); n = n + (Math.PI / 180.0))
+                //{
+                //    tempred = red * Math.Sin(n);
+                //    tempgreen = green * Math.Sin(n);
+                //    tempblue = blue * Math.Sin(n);
+                //}
             }
 
-            //Temp values may not exceed 254
+            //Temp values may not exceed 254 to prevent crashes (bytes are limited to 255)
             if (tempred >= 254)
             {
                 tempred = 254;
@@ -139,17 +147,20 @@ namespace RGB_LED_Controller
 
             //Make a dispatcher timer for the breathing effect
             var BreathingTimer = new DispatcherTimer();
-            BreathingTimer.Interval = TimeSpan.FromMilliseconds(50);
+            BreathingTimer.Interval = TimeSpan.FromMilliseconds(40);
             BreathingTimer.Start();
             //Execute the following code when a tick is made:
             BreathingTimer.Tick += (sender, args) =>
             {
+                //Stop the timer to prevent endless loop
                 BreathingTimer.Stop();
+                //Floor and set the temporary variables to the variable red, green and blue
                 red = Convert.ToByte(Math.Floor(tempred));
                 green = Convert.ToByte(Math.Floor(tempgreen));
                 blue = Convert.ToByte(Math.Floor(tempblue));
 
-                if ((red==0 && sliderRed.Value!=0) || (green == 0 && sliderGreen.Value != 0) || (blue == 0 && sliderBlue.Value != 0))
+                //If one color value reached 0, and it's slider value is not 0, set everything to 0
+                if ((red == 0 && sliderRed.Value != 0) || (green == 0 && sliderGreen.Value != 0) || (blue == 0 && sliderBlue.Value != 0))
                 {
                     red = 0;
                     green = 0;
@@ -157,12 +168,26 @@ namespace RGB_LED_Controller
                     UpDown = true;
                 }
 
+                //If all sliders reached their maximum values, start going down
                 if ((red >= Convert.ToByte(sliderRed.Value)) && (green >= Convert.ToByte(sliderGreen.Value)) && (blue >= Convert.ToByte(sliderBlue.Value)))
                 {
-                    red = Convert.ToByte(sliderRed.Value);
-                    green = Convert.ToByte(sliderGreen.Value);
-                    blue = Convert.ToByte(sliderBlue.Value);
                     UpDown = false;
+                }
+
+                //If red is the max value of it's slider, keep it at that value, same goes for green and blue
+                if (red >= Convert.ToByte(sliderRed.Value))
+                {
+                    red = Convert.ToByte(sliderRed.Value);
+                }
+
+                if (green >= Convert.ToByte(sliderGreen.Value))
+                {
+                    red = Convert.ToByte(sliderRed.Value);
+                }
+
+                if (blue >= Convert.ToByte(sliderBlue.Value))
+                {
+                    blue = Convert.ToByte(sliderBlue.Value);
                 }
             };
         }
